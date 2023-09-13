@@ -453,7 +453,7 @@ class AlgoTrader():
         print(f"Total profit: {total_profit}")
 
 
-        return total_profit
+        return [total_profit, books]
     
     
     def plot_profit(self):
