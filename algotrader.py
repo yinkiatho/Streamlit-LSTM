@@ -7,7 +7,6 @@ from sklearn.model_selection import TimeSeriesSplit
 from keras.models import Sequential
 from keras.layers import Dense, Dropout, BatchNormalization, Conv1D, Flatten, MaxPooling1D, LSTM
 from keras.callbacks import EarlyStopping, ModelCheckpoint, TensorBoard
-from keras.wrappers.scikit_learn import KerasRegressor
 from keras.models import load_model
 from sklearn.preprocessing import MinMaxScaler
 import yfinance as yf
