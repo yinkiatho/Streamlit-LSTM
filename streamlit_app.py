@@ -23,7 +23,7 @@ uploaded_file = st.multiselect("Choose stock ticker", ["SPY"])
 default_training_data = pd.read_csv("Datasets/SPY_30years.csv")
 
 if uploaded_file is not None:
-    df = pd.read_csv(uploaded_file)
+    #df = pd.read_csv(uploaded_file)
     st.subheader("Data Overview")
     st.write(default_training_data)
     
