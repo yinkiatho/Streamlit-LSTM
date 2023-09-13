@@ -20,7 +20,7 @@ st.title("Stock Price Prediction App")
 
 # Upload a CSV file containing historical stock data
 uploaded_file = st.multiselect("Choose stock ticker", ["SPY"])
-default_training_data = pd.read_csv("Datasets/SPY_30years.csv")
+default_training_data = pd.read_csv("Datasets/SPY_30years.csv", index_col="Date")
 
 if uploaded_file is not None:
     #df = pd.read_csv(uploaded_file)
@@ -41,7 +41,7 @@ if uploaded_file is not None:
     
     # Display predictions and metrics
     st.subheader("Transaction History and Profit")
-    st.write(pd.DataFrame(books))
+    st.write(books)
     st.subheader("Total Profit")
     st.write(total_profit)
 
