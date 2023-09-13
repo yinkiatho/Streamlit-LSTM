@@ -30,7 +30,7 @@ if uploaded_file is not None:
     
     #Loading and running the algorithm
     algotrader = AlgoTrader()
-    algotrader.load_training_data(default_training_data)
+    algotrader.load_training_data()
     algotrader.train_LSTM()
     #algotrader.load_visualisations()
     algotrader.load_algorithm(DualSMASignal())

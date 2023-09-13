@@ -36,7 +36,7 @@ class AlgoTrader():
             columns=["Date", "Action", "Price", "Quantity"])
         self.cash = 1000000
 
-    def load_lstm_model(self, model_path="RNN Trading/Algo Trading/model.keras"):
+    def load_lstm_model(self, model_path="model.keras"):
         try:
             self.model = load_model(model_path)
             print("Model loaded")
