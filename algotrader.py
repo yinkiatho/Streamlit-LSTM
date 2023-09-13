@@ -167,7 +167,7 @@ class AlgoTrader():
             train_x, train_y, epochs=int(params.iloc[0, 0]), batch_size=int(params.iloc[0, 1]), verbose=2)
 
         self.model = model
-        model.save("RNN Trading/Algo Trading/model.keras")
+        model.save("model.keras")
 
         # Predicting Testing Dataset
         # Predicting Testing Dataset
