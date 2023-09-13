@@ -53,7 +53,7 @@ class AlgoTrader():
 
         GetData = yf.download(ticker, start=startdate, end=enddate)
         df = pd.DataFrame(GetData)
-        df.index = df.index.strftime('%Y-%m-%d')
+        #df.index = df.index.strftime('%Y-%m-%d')
         df = df.sort_index()
 
         # Build Columns
