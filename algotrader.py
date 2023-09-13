@@ -16,10 +16,10 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 from algorithm import DualSMASignal
 
-default_data = pd.read_csv("RNN Trading/Datasets/SPY_raw.csv",
+default_data = pd.read_csv("Datasets/SPY_raw.csv",
                            index_col="Date", parse_dates=True)
 
-default_new_data = pd.read_csv("RNN Trading/Datasets/SPY_input.csv",)
+default_new_data = pd.read_csv("Datasets/SPY_input.csv",)
 
 
 class AlgoTrader():

@@ -13,14 +13,14 @@ from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LinearRegression
 from sklearn.metrics import mean_squared_error
 
-default_new_data = pd.read_csv("RNN Trading/Datasets/SPY_input.csv",)
+default_new_data = pd.read_csv("Datasets/SPY_input.csv",)
 
 # Define the Streamlit app
 st.title("Stock Price Prediction App")
 
 # Upload a CSV file containing historical stock data
 uploaded_file = st.multiselect("Choose stock ticker", ["SPY"])
-default_training_data = pd.read_csv("RNN Trading/Datasets/SPY_30years.csv")
+default_training_data = pd.read_csv("Datasets/SPY_30years.csv")
 
 if uploaded_file is not None:
     df = pd.read_csv(uploaded_file)

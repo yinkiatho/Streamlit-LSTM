@@ -4,7 +4,7 @@ from algorithm import DualSMASignal
 import pandas as pd
 import numpy as np
 
-default_new_data = pd.read_csv("RNN Trading/Datasets/SPY_input.csv",)
+default_new_data = pd.read_csv("Datasets/SPY_input.csv",)
 new_row = pd.DataFrame(default_new_data.iloc[0, :]).transpose()
 print(new_row)
 
