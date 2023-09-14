@@ -25,6 +25,7 @@ class AlgoTrader():
 
     def __init__(self, window, ticker):
         self.models_dict = {
+            
             "SPY": load_model('model_SPY.keras'),
             "MSFT": load_model('model_MSFT.keras'),
             "AAPL": load_model('model_AAPL.keras'),

@@ -22,19 +22,6 @@ st.title("Stock Price Prediction App")
 ticker = st.selectbox("Choose stock ticker", ("SPY", "AAPL", "MSFT", "GOOG"))
 default_training_data = pd.read_csv(f"Datasets/{ticker}_30years.csv", index_col="Date")
 
-# Get the current working directory
-current_directory = os.getcwd()
-
-# Display the working directory in your Streamlit app
-st.write("Current Working Directory:", current_directory)
-# List all items (files and directories) in the current directory
-items_in_directory = os.listdir(current_directory)
-
-# Display the list of items in your Streamlit app
-st.write("Items in Current Directory:")
-for item in items_in_directory:
-    st.write(item)
-
 if default_training_data is not None:
     st.set_option('deprecation.showPyplotGlobalUse', False)
     #df = pd.read_csv(uploaded_file)
