@@ -27,10 +27,12 @@ if default_training_data is not None:
     st.set_option('deprecation.showPyplotGlobalUse', False)
     #df = pd.read_csv(uploaded_file)
     st.subheader("Data Overview")
+    st.write("The data is loaded and displayed below")
     st.write(default_training_data)
     
     #Data Exploration
     st.subheader("Data Exploration")
+    st.write("The data is explored by looking at the first 5 rows of the data, the shape of the data, the data types of each column, and the summary statistics of the data.")
     st.write(default_training_data.describe())
     
     #Data Visualization
@@ -115,9 +117,6 @@ if default_training_data is not None:
         
     plt.tight_layout()
     st.pyplot()
-
-
-    
     
     # Load new data
     default_new_data = pd.read_csv(f"Datasets/{ticker}_input.csv")
@@ -147,77 +146,86 @@ if default_training_data is not None:
     st.pyplot()
     
     
-    st.subheader("SMA + LSTM Prediction on Input Data")
-    algotrader.load_algorithm(DualSMASignal())
-    algotrader.run_sma_algorithm_two(default_new_data)
     
+    tab1, tab2, tab3 = st.tabs(["SMA + LSTM Prediction on Input Data", "Mean Reversion Strategy on Input Data", "LSTM Strategy on Input Data"])
     
-    total_profit, books = algotrader.tally_books()
-    #algotrader.plot_results()
-    
-    
-    # Display predictions and metrics
-    st.subheader("Transaction History and Profit")
-    st.write(books)
-    st.subheader("Total Profit")
-    st.write(total_profit)
+    with tab1:
+        st.subheader("SMA + LSTM Prediction on Input Data")
+        st.write("Momentum trading strategy, whereby we long when SMA5 is greater than SMA20, coupled with its corresponding signal from the LSTM model. We short when SMA5 is less than SMA20, coupled with its corresponding signal from the LSTM model.")
+        algotrader.load_algorithm(DualSMASignal())
+        algotrader.run_sma_algorithm_two(default_new_data)
 
-    # Plot the actual vs. predicted stock prices
-    fig, ax = plt.subplots(figsize=(8, 6))
-    ax.plot(books.Date, books.Profit, label="Profit Level ")
-    ax.set_xlabel("Date")
-    ax.set_ylabel("Profit")
-    ax.set_title("Profit vs. Date")
-    ax.legend()
-    st.pyplot(fig)
+        total_profit, books = algotrader.tally_books()
+        # algotrader.plot_results()
+
+        # Display predictions and metrics
+        st.subheader("Transaction History and Profit")
+        st.write(books)
+        st.subheader("Total Profit")
+        st.write(total_profit)
+
+        # Plot the actual vs. predicted stock prices
+        fig, ax = plt.subplots(figsize=(8, 6))
+        ax.plot(books.Date, books.Profit, label="Profit Level ")
+        ax.set_xlabel("Date")
+        ax.set_ylabel("Profit")
+        ax.set_title("Profit vs. Date")
+        ax.legend()
+        st.pyplot(fig)
+        
+        
+    with tab2:
     
-    st.subheader("Mean Reversion Strategy on Input Data")
-    st.write("Classic 3 Day Mean Reversion Strategy, longing stock when close price falls below the 3 day moving average and shorting when it rises above the 3 day moving average.")
-    algotrader = AlgoTrader(5, ticker)
-    algotrader.streamlit_initilise()
-    algotrader.load_algorithm(DualSMASignal())
-    algotrader.run_mean_reversion_algorithm(default_new_data)
+        st.subheader("Mean Reversion Strategy on Input Data")
+        st.write("Classic 3 Day Mean Reversion Strategy, longing stock when close price falls below the 3 day moving average and shorting when it rises above the 3 day moving average.")
+        algotrader = AlgoTrader(5, ticker)
+        algotrader.streamlit_initilise()
+        algotrader.load_algorithm(DualSMASignal())
+        algotrader.run_mean_reversion_algorithm(default_new_data)
     
-    total_profit, books = algotrader.tally_books()
-    # algotrader.plot_results()
+        total_profit, books = algotrader.tally_books()
+        # algotrader.plot_results()
 
-    # Display predictions and metrics
-    st.subheader("Transaction History and Profit")
-    st.write(books)
-    st.subheader("Total Profit")
-    st.write(total_profit)
+        # Display predictions and metrics
+        st.subheader("Transaction History and Profit")
+        st.write(books)
+        st.subheader("Total Profit")
+        st.write(total_profit)
 
     
-    fig, ax = plt.subplots(figsize=(8, 6))
-    ax.plot(books.Date, books.Profit, label="Profit Level ")
-    ax.set_xlabel("Date")
-    ax.set_ylabel("Profit")
-    ax.set_title("Profit vs. Date")
-    ax.legend()
-    st.pyplot(fig)
+        fig, ax = plt.subplots(figsize=(8, 6))
+        ax.plot(books.Date, books.Profit, label="Profit Level ")
+        ax.set_xlabel("Date")
+        ax.set_ylabel("Profit")
+        ax.set_title("Profit vs. Date")
+        ax.legend()
+        st.pyplot(fig)
+        
+    with tab3:
     
-    st.subheader("LSTM Strategy on Input Data")
-    algotrader = AlgoTrader(5, ticker)
-    algotrader.streamlit_initilise()
-    algotrader.load_algorithm(DualSMASignal())
-    algotrader.run_lstm_algorithm(default_new_data)
+        st.subheader("LSTM Strategy on Input Data")
+        st.write("Long-Short Intra-Day strategy - For the prediction for each stock on the next day, if the prediction is positive, we buy the stock at the open price and sell the stock at close price in the same day. If the prediction is negative, we short-sell the stock at the open price and close out the short-sell at the close price.")
+        algotrader = AlgoTrader(5, ticker)
+        algotrader.streamlit_initilise()
+        algotrader.load_algorithm(DualSMASignal())
+        algotrader.run_lstm_algorithm(default_new_data)
 
-    total_profit, books = algotrader.tally_books()
-    # algotrader.plot_results()
+        total_profit, books = algotrader.tally_books()
+        # algotrader.plot_results()
 
-    # Display predictions and metrics
-    st.subheader("Transaction History and Profit")
-    st.write(books)
-    st.subheader("Total Profit")
-    st.write(total_profit)
+        # Display predictions and metrics
+        st.subheader("Transaction History and Profit")
+        st.write(books)
+        st.subheader("Total Profit")
+        st.write(total_profit)
 
-    fig, ax = plt.subplots(figsize=(8, 6))
-    ax.plot(books.Date, books.Profit, label="Profit Level ")
-    ax.set_xlabel("Date")
-    ax.set_ylabel("Profit")
-    ax.set_title("Profit vs. Date")
-    ax.legend()
-    st.pyplot(fig)
+        fig, ax = plt.subplots(figsize=(8, 6))
+        ax.plot(books.Date, books.Profit, label="Profit Level ")
+        ax.set_xlabel("Date")
+        ax.set_ylabel("Profit")
+        ax.set_title("Profit vs. Date")
+        ax.legend()
+        st.pyplot(fig)
 
     
 
