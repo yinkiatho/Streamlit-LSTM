@@ -100,7 +100,7 @@ if default_training_data is not None:
         default_training_data[m].hist(bins=100, color=colors[i-1])
         plt.ylabel(m)
         plt.xlabel(None)
-        plt.title(f"Histogram of {m} for SPY500")
+        plt.title(f"Histogram of {m} for {ticker}")
         
     plt.tight_layout()
     st.pyplot()
@@ -109,7 +109,7 @@ if default_training_data is not None:
     for (i, m) in enumerate(metrics, 1):
         plt.figure(figsize=(15, 10))
         plt.ylabel(m)
-        plt.title(f"Average {m} for SPY500")
+        plt.title(f"Average {m} for {ticker}")
         plt.subplots_adjust(top=1.5, bottom=1.2)
         default_training_data[m].plot(figsize=(15, 10), color=colors[i-1])
         
@@ -172,6 +172,7 @@ if default_training_data is not None:
     st.pyplot(fig)
     
     st.subheader("Mean Reversion Strategy on Input Data")
+    st.write("Classic 3 Day Mean Reversion Strategy, longing stock when close price falls below the 3 day moving average and shorting when it rises above the 3 day moving average.")
     algotrader = AlgoTrader(5, ticker)
     algotrader.streamlit_initilise()
     algotrader.load_algorithm(DualSMASignal())

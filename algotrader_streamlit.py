@@ -363,7 +363,7 @@ class AlgoTrader():
             print(f"Row {i}: ")
             # print(row_data)
             date = row_data.iloc[0, 0]
-            close = row_data.iloc[0, 3]
+            close = row_data.iloc[0, 4]
             # print(f"Date: {row_data.iloc[0, 0]}")
             # print(f"Close Price: {row_data.iloc[0, 3]}")
 
@@ -442,10 +442,12 @@ class AlgoTrader():
 
             # Read row_data
             row_data = pd.DataFrame(input_data.iloc[i, :]).transpose()
+            print(row_data)
             print(f"Row {i}: ")
             # print(row_data)
             date = row_data.iloc[0, 0]
-            close = row_data.iloc[0, 3]
+            close = row_data.iloc[0, 4]
+            open = row_data.iloc[0, 1]
             # print(f"Date: {row_data.iloc[0, 0]}")
             # print(f"Close Price: {row_data.iloc[0, 3]}")
 
@@ -462,31 +464,31 @@ class AlgoTrader():
             if predicted_close > past_predicted:
                 # Buy stock
                 print(
-                    f"Buying SPY500 on {date}, buying at {close}")
-                self.cash -= close * 5
+                    f"Buying SPY500 on {date}, buying at {open} selling at {close}")
+                self.cash += (open - close) * 5
                 new_row = pd.DataFrame(
-                    {"Date": date, "Action": "Buy", "Price": close, "Quantity": 5}, index=[0])
+                    {"Date": date, "Action": "Buy", "Price": open - close, "Quantity": 5}, index=[0])
                 books = pd.concat([books, new_row], axis=0, ignore_index=True)
 
                 print(f"Current holdings: {books}")
 
                 # add to past_close
 
-                long += 5
+                #long += 5
 
             elif predicted_close < past_predicted:
                 # Sell stock
                 print(
-                    f"Selling SPY500 on {date}, selling at {close}")
-                self.cash += close * 5
+                    f"Selling SPY500 on {date}, selling at {open} buying at {close}")
+                self.cash += (close - open) * 5
 
                 new_row = pd.DataFrame(
-                    {"Date": date, "Action": "Sell", "Price": close, "Quantity": 5}, index=[0])
+                    {"Date": date, "Action": "Sell", "Price": close - open, "Quantity": 5}, index=[0])
                 books = pd.concat([books, new_row], axis=0, ignore_index=True)
 
                 print(f"Current holdings: {books}")
 
-                short += 5
+                #short += 5
 
         # Clear holdings at the end of the day
         if long > short:
@@ -531,7 +533,7 @@ class AlgoTrader():
             print(f"Row {i}: ")
             # print(row_data)
             date = row_data.iloc[0, 0]
-            close = row_data.iloc[0, 3]
+            close = row_data.iloc[0, 4]
             # print(f"Date: {row_data.iloc[0, 0]}")
             # print(f"Close Price: {row_data.iloc[0, 3]}")
 
@@ -583,18 +585,18 @@ class AlgoTrader():
                 status = 0
 
         # Clear holdings at the end of the day
-        if long > short:
-            for i in range(long - short):
-                new_row = pd.DataFrame(
-                    {"Date": date, "Action": "Sell", "Price": close, "Quantity": 1}, index=[0])
-                books = pd.concat([books, new_row], axis=0, ignore_index=True)
-                self.cash += close
-        elif long < short:
-            for i in range(short - long):
-                new_row = pd.DataFrame(
-                    {"Date": date, "Action": "Buy", "Price": close, "Quantity": 1}, index=[0])
-                books = pd.concat([books, new_row], axis=0, ignore_index=True)
-                self.cash -= close
+        #if long > short:
+        #    for i in range(long - short):
+        #        new_row = pd.DataFrame(
+        #            {"Date": date, "Action": "Sell", "Price": close, "Quantity": 1}, index=[0])
+        #        books = pd.concat([books, new_row], axis=0, ignore_index=True)
+        #        self.cash += close
+        #elif long < short:
+        #    for i in range(short - long):
+        #        new_row = pd.DataFrame(
+        #            {"Date": date, "Action": "Buy", "Price": close, "Quantity": 1}, index=[0])
+        #        books = pd.concat([books, new_row], axis=0, ignore_index=True)
+        #        self.cash -= close
 
         self.books = books
         self.past_close = past_close
@@ -620,7 +622,7 @@ class AlgoTrader():
             print(f"Row {i}: ")
             # print(row_data)
             date = row_data.iloc[0, 0]
-            close = row_data.iloc[0, 3]
+            close = row_data.iloc[0, 4]
            # print(f"Date: {row_data.iloc[0, 0]}")
             # print(f"Close Price: {row_data.iloc[0, 3]}")
 
@@ -638,7 +640,7 @@ class AlgoTrader():
                 [past_close, new_row], axis=0, ignore_index=True)
 
             # Execute Mean-Reversion Strategy
-            print(past_close.iloc[-1:-4:-1, :])
+            #print(past_close.iloc[-1:-4:-1, :])
             if close < past_close.iloc[-1:-4:-1, 0].mean():
                 # Buy stock
                 print(
@@ -679,18 +681,18 @@ class AlgoTrader():
                 short += 5
 
         # Clear holdings at the end of the day
-        if long > short:
-            for i in range(long - short):
-                new_row = pd.DataFrame(
-                    {"Date": date, "Action": "Sell", "Price": close, "Quantity": 1}, index=[0])
-                books = pd.concat([books, new_row], axis=0, ignore_index=True)
-                self.cash += close
-        elif long < short:
-            for i in range(short - long):
-                new_row = pd.DataFrame(
-                    {"Date": date, "Action": "Buy", "Price": close, "Quantity": 1}, index=[0])
-                books = pd.concat([books, new_row], axis=0, ignore_index=True)
-                self.cash -= close
+        #if long > short:
+        #    for i in range(long - short):
+        #        new_row = pd.DataFrame(
+        #            {"Date": date, "Action": "Sell", "Price": close, "Quantity": 1}, index=[0])
+        #        books = pd.concat([books, new_row], axis=0, ignore_index=True)
+        #        self.cash += close
+        #elif long < short:
+        #    for i in range(short - long):
+        #        new_row = pd.DataFrame(
+        #            {"Date": date, "Action": "Buy", "Price": close, "Quantity": 1}, index=[0])
+        #        books = pd.concat([books, new_row], axis=0, ignore_index=True)
+        #        self.cash -= close
 
         self.books = books
         self.past_close = past_close
