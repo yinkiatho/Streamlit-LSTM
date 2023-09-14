@@ -27,10 +27,10 @@ class AlgoTrader():
         
         self.models_dict = {
             
-            "SPY": load_model('model_SPY.keras'),
-            "MSFT": load_model('model_MSFT.keras'),
-            "AAPL": load_model('model_AAPL.keras'),
-            "GOOG": load_model('model_GOOG.keras')
+            "SPY": load_model('/mount/src/algotrading/model_SPY.keras'),
+            "MSFT": load_model('/mount/src/algotrading/model_MSFT.keras'),
+            "AAPL": load_model('/mount/src/algotrading/model_AAPL.keras'),
+            "GOOG": load_model('/mount/src/algotrading/model_GOOG.keras')
         }
         self.algorithm = None
         self.model = None
