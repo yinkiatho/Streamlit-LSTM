@@ -22,7 +22,6 @@ st.title("Stock Price Prediction App")
 ticker = st.selectbox("Choose stock ticker", ("SPY", "AAPL", "MSFT", "GOOG"))
 default_training_data = pd.read_csv(f"Datasets/{ticker}_30years.csv", index_col="Date")
 
-st.write(os.getcwd())
 
 if default_training_data is not None:
     st.set_option('deprecation.showPyplotGlobalUse', False)
@@ -117,9 +116,9 @@ if default_training_data is not None:
     st.pyplot()
     
     
-    
+    st.subheader("SMA + LSTM Prediction on Input Data")
     algotrader.load_algorithm(DualSMASignal())
-    algotrader.run_mean_reversion_algorithm(default_new_data)
+    algotrader.run_sma_algorithm_two(default_new_data)
     
     
     total_profit, books = algotrader.tally_books()
@@ -133,13 +132,62 @@ if default_training_data is not None:
     st.write(total_profit)
 
     # Plot the actual vs. predicted stock prices
-    fig, ax = plt.subplots()
-    ax.plot(books.Profit, label="Actual Close")
+    fig, ax = plt.subplots(figsize=(8, 6))
+    ax.plot(books.Date, books.Profit, label="Profit Level ")
     ax.set_xlabel("Date")
     ax.set_ylabel("Profit")
     ax.set_title("Profit vs. Date")
     ax.legend()
     st.pyplot(fig)
+    
+    st.subheader("Mean Reversion Strategy on Input Data")
+    algotrader = AlgoTrader(5, ticker)
+    algotrader.streamlit_initilise()
+    algotrader.load_algorithm(DualSMASignal())
+    algotrader.run_mean_reversion_algorithm(default_new_data)
+    
+    total_profit, books = algotrader.tally_books()
+    # algotrader.plot_results()
+
+    # Display predictions and metrics
+    st.subheader("Transaction History and Profit")
+    st.write(books)
+    st.subheader("Total Profit")
+    st.write(total_profit)
+
+    
+    fig, ax = plt.subplots(figsize=(8, 6))
+    ax.plot(books.Date, books.Profit, label="Profit Level ")
+    ax.set_xlabel("Date")
+    ax.set_ylabel("Profit")
+    ax.set_title("Profit vs. Date")
+    ax.legend()
+    st.pyplot(fig)
+    
+    st.subheader("LSTM Strategy on Input Data")
+    algotrader = AlgoTrader(5, ticker)
+    algotrader.streamlit_initilise()
+    algotrader.load_algorithm(DualSMASignal())
+    algotrader.run_lstm_algorithm(default_new_data)
+
+    total_profit, books = algotrader.tally_books()
+    # algotrader.plot_results()
+
+    # Display predictions and metrics
+    st.subheader("Transaction History and Profit")
+    st.write(books)
+    st.subheader("Total Profit")
+    st.write(total_profit)
+
+    fig, ax = plt.subplots(figsize=(8, 6))
+    ax.plot(books.Date, books.Profit, label="Profit Level ")
+    ax.set_xlabel("Date")
+    ax.set_ylabel("Profit")
+    ax.set_title("Profit vs. Date")
+    ax.legend()
+    st.pyplot(fig)
+
+    
 
     # Calculate profits or any other relevant metrics here
     # You can add more sections to display additional charts and tables

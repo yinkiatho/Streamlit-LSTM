@@ -26,8 +26,8 @@ class DualSMASignal():
     def generate_sma_signals(self, row_data=None):
         print("Generating SMA signals")
         print(row_data)
-        signal = (row_data['SMA_20'] > row_data['SMA_252'])[0]
-        date = (row_data['SMA_20'] > row_data['SMA_252']).index
+        signal = (row_data['SMA_5'] > row_data['SMA_20'])[0]
+        date = (row_data['SMA_5'] > row_data['SMA_20']).index
         #Idea if SMA 5 > SMA 20, buy, else sell
         return [signal, date]
         
