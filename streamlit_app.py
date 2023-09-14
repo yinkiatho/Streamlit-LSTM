@@ -41,6 +41,7 @@ if default_training_data is not None:
     colors = ['red', 'green', 'blue', 'black']
 
     st.subheader("Line Chart of Prices Over Time")
+    st.write(f"Examining the historical closing, opening, high and adjusted close price for {ticker} stock across the 30 year timeframe.")
     for i, m in enumerate(metrics):
     # plot the metrics with colors
         plt.subplot(2, 2, i+1)
@@ -54,6 +55,7 @@ if default_training_data is not None:
     
     # Plotting Volume Data
     st.subheader("Line Chart of Volume Over Time")
+    st.write(f"Examining the historical volume and adv20 for {ticker} stock across the 30 year timeframe. Volume refers to the total number of shares or contracts traded for a particular financial asset (e.g., stocks, bonds, commodities) within a specific time frame, typically a trading day. ADV20 is the average trading volume of a financial asset over the previous 20 trading days and provides a smoothed view of {ticker}'s volume data.")
     plt.figure(figsize=(15, 10))
     plt.subplots_adjust(top=1.25, bottom=1.2)
     vol_metrics = ['Volume', 'adv20']
@@ -63,15 +65,18 @@ if default_training_data is not None:
         default_training_data[m].plot()
         plt.ylabel(m)
         plt.xlabel(None)
-        plt.title(f"{m} for SPY500")
+        plt.title(f"{m} for {ticker}")
 
     plt.tight_layout()
     st.pyplot()
     
     # Plotting MAs
     st.subheader("SMA over Time")
+    st.write(f"SMA provides a smoothed view of the price trend for {ticker} by creating a constantly updated average price. In this plot, SMA5, SMA20, SMA50, SMA252 along with its adjusted close price is plotted to visualise the trends.")
     metrics = ['Adj Close', 'SMA_5', 'SMA_20', 'SMA_50', 'SMA_252']
-    default_training_data[metrics].plot(figsize=(15, 10), title=f"Different SMAs for SPY500")
+    default_training_data[metrics].plot(figsize=(15, 10), title=f"Different SMAs for {ticker}")
+    plt.gca().set_facecolor('white')
+    plt.grid(True, linestyle='--', alpha=0.7)
     st.pyplot()
 
 

@@ -40,6 +40,7 @@ class AlgoTrader():
 
     def load_lstm_model(self):
         path = "model_" + self.ticker + ".keras"
+        print(path)
         try:
             self.model = load_model(path)
             print("Model loaded")
