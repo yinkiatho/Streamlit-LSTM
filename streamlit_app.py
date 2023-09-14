@@ -96,7 +96,7 @@ if default_training_data is not None:
     
     #Loading and running the algorithm
     algotrader = AlgoTrader(5, ticker)
-    algotrader.streamlit_initilise(models_dict[ticker])
+    algotrader.streamlit_initilise()
     #algotrader.load_visualisations()
     algotrader.load_algorithm(DualSMASignal())
     algotrader.run_mean_reversion_algorithm(default_new_data)

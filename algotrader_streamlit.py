@@ -24,6 +24,12 @@ default_new_data = pd.read_csv("Datasets/SPY_input.csv",)
 class AlgoTrader():
 
     def __init__(self, window, ticker):
+        self.models_dict = {
+            "SPY": load_model('model_SPY.keras'),
+            "MSFT": load_model('model_MSFT.keras'),
+            "AAPL": load_model('model_AAPL.keras'),
+            "GOOG": load_model('model_GOOG.keras')
+        }
         self.algorithm = None
         self.model = None
         self.window = window
@@ -38,21 +44,21 @@ class AlgoTrader():
             columns=["Date", "Action", "Price", "Quantity"])
         self.cash = 1000000
 
-    def load_lstm_model(self, model):
+    def load_lstm_model(self):
         #path = "/model_" + self.ticker + ".keras"
         #print(path)
         try:
         #    self.model = load_model(path)
-            self.model = model
+            self.model = self.models_dict[self.ticker]
             print("Model loaded")
 
         except:
             print("Model not found, training model")
             self.train_LSTM()
             
-    def streamlit_initilise(self, model):
+    def streamlit_initilise(self):
         # Load model, build test_data and aggregations
-        self.load_lstm_model(model)
+        self.load_lstm_model()
         
         # Create a dataset of only the close column
         df = self.default_data['Close']
