@@ -38,20 +38,21 @@ class AlgoTrader():
             columns=["Date", "Action", "Price", "Quantity"])
         self.cash = 1000000
 
-    def load_lstm_model(self):
-        path = "model_" + self.ticker + ".keras"
-        print(path)
+    def load_lstm_model(self, model):
+        #path = "/model_" + self.ticker + ".keras"
+        #print(path)
         try:
-            self.model = load_model(path)
+        #    self.model = load_model(path)
+            self.model = model
             print("Model loaded")
 
         except:
             print("Model not found, training model")
             self.train_LSTM()
             
-    def streamlit_initilise(self):
+    def streamlit_initilise(self, model):
         # Load model, build test_data and aggregations
-        self.load_lstm_model()
+        self.load_lstm_model(model)
         
         # Create a dataset of only the close column
         df = self.default_data['Close']
