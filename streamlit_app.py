@@ -95,6 +95,27 @@ if default_training_data is not None:
     algotrader = AlgoTrader(5, ticker)
     algotrader.streamlit_initilise()
     #algotrader.load_visualisations()
+    
+    st.subheader("LSTM Prediction on Test Data")
+    test_x = algotrader.default_test[0]
+    test_y = algotrader.default_test[1]
+
+    # Predicting Testing Dataset
+    test_predict = algotrader.model.predict(test_x)
+    # print(test_x.shape)
+    # print(test_predict)
+    # test_predict = scaler.inverse_transform(test_predict)
+    # test_labels = scaler.inverse_transform(test_y)
+    plt.figure(figsize=(30, 10))
+    plt.plot(test_y, label="actual")
+    plt.plot(test_predict, label="prediction")
+    plt.legend(fontsize=20)
+    plt.grid(axis="both")
+    plt.title("Actual close price and pedicted one on test set", fontsize=25)
+    st.pyplot()
+    
+    
+    
     algotrader.load_algorithm(DualSMASignal())
     algotrader.run_mean_reversion_algorithm(default_new_data)
     
