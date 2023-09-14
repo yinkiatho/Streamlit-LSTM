@@ -18,7 +18,7 @@ from sklearn.metrics import mean_squared_error
 st.title("Stock Price Prediction App")
 
 # Upload a CSV file containing historical stock data
-ticker = st.multiselect("Choose stock ticker", ["SPY", "AAPL", "MSFT", "GOOG"])
+ticker = st.selectbox("Choose stock ticker", ("SPY", "AAPL", "MSFT", "GOOG"))
 default_training_data = pd.read_csv(f"Datasets/{ticker}_30years.csv", index_col="Date")
 
 if default_training_data is not None:
