@@ -84,6 +84,37 @@ if default_training_data is not None:
     plt.gca().set_facecolor('white')
     plt.grid(True, linestyle='--', alpha=0.7)
     st.pyplot()
+    
+    # Plotting Daily Returns
+    st.subheader("Investigating Returns")
+    st.write(
+        f"Daily returns and Monthly returns are plotted across the 30year time frame to visualise its trends, along with histograms to visualise the dispersion and central tendencies of each return metric.")
+    
+    plt.figure(figsize=(12, 10))
+    plt.subplots_adjust(top=1.25, bottom=1.2)
+    colors = ['red', 'blue']
+
+    metrics = ['daily_return', 'monthly_return']
+    for i, m in enumerate(metrics, 1):
+        plt.subplot(2, 2, i)
+        default_training_data[m].hist(bins=100, color=colors[i-1])
+        plt.ylabel(m)
+        plt.xlabel(None)
+        plt.title(f"Histogram of {m} for SPY500")
+        
+    plt.tight_layout()
+    st.pyplot()
+
+
+    for (i, m) in enumerate(metrics, 1):
+        plt.figure(figsize=(15, 10))
+        plt.ylabel(m)
+        plt.title(f"Average {m} for SPY500")
+        plt.subplots_adjust(top=1.5, bottom=1.2)
+        default_training_data[m].plot(figsize=(15, 10), color=colors[i-1])
+        
+    plt.tight_layout()
+    st.pyplot()
 
 
     
