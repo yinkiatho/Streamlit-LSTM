@@ -1,3 +1,4 @@
+import os
 import streamlit as st
 import pandas as pd
 import numpy as np
@@ -20,6 +21,12 @@ st.title("Stock Price Prediction App")
 # Upload a CSV file containing historical stock data
 ticker = st.selectbox("Choose stock ticker", ("SPY", "AAPL", "MSFT", "GOOG"))
 default_training_data = pd.read_csv(f"Datasets/{ticker}_30years.csv", index_col="Date")
+
+# Get the current working directory
+current_directory = os.getcwd()
+
+# Display the working directory in your Streamlit app
+st.write("Current Working Directory:", current_directory)
 
 if default_training_data is not None:
     st.set_option('deprecation.showPyplotGlobalUse', False)
@@ -48,6 +55,8 @@ if default_training_data is not None:
         default_training_data[m].plot(color=colors[i])
         plt.ylabel(m + " Price")
         plt.xlabel(None)
+        plt.gca().set_facecolor('white')
+        plt.grid(True, linestyle='--', alpha=0.7)
         plt.title(f"{m} Price of {ticker}")
 
     plt.tight_layout()
@@ -65,6 +74,8 @@ if default_training_data is not None:
         default_training_data[m].plot()
         plt.ylabel(m)
         plt.xlabel(None)
+        plt.gca().set_facecolor('white')
+        plt.grid(True, linestyle='--', alpha=0.7)
         plt.title(f"{m} for {ticker}")
 
     plt.tight_layout()
