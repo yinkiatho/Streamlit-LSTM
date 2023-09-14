@@ -22,6 +22,7 @@ ticker = st.selectbox("Choose stock ticker", ("SPY", "AAPL", "MSFT", "GOOG"))
 default_training_data = pd.read_csv(f"Datasets/{ticker}_30years.csv", index_col="Date")
 
 if default_training_data is not None:
+    st.set_option('deprecation.showPyplotGlobalUse', False)
     #df = pd.read_csv(uploaded_file)
     st.subheader("Data Overview")
     st.write(default_training_data)
@@ -39,6 +40,7 @@ if default_training_data is not None:
     metrics = ['Close', 'Open', 'High', 'Adj Close']
     colors = ['red', 'green', 'blue', 'black']
 
+    st.subheader("Line Chart of Prices Over Time")
     for i, m in enumerate(metrics):
     # plot the metrics with colors
         plt.subplot(2, 2, i+1)
@@ -50,6 +52,29 @@ if default_training_data is not None:
     plt.tight_layout()
     st.pyplot()
     
+    # Plotting Volume Data
+    st.subheader("Line Chart of Volume Over Time")
+    plt.figure(figsize=(15, 10))
+    plt.subplots_adjust(top=1.25, bottom=1.2)
+    vol_metrics = ['Volume', 'adv20']
+
+    for i, m in enumerate(vol_metrics, 1):
+        plt.subplot(2, 2, i)
+        default_training_data[m].plot()
+        plt.ylabel(m)
+        plt.xlabel(None)
+        plt.title(f"{m} for SPY500")
+
+    plt.tight_layout()
+    st.pyplot()
+    
+    # Plotting MAs
+    st.subheader("SMA over Time")
+    metrics = ['Adj Close', 'SMA_5', 'SMA_20', 'SMA_50', 'SMA_252']
+    default_training_data[metrics].plot(figsize=(15, 10), title=f"Different SMAs for SPY500")
+    st.pyplot()
+
+
     
     
     # Load new data
@@ -57,7 +82,7 @@ if default_training_data is not None:
     
     
     #Loading and running the algorithm
-    algotrader = AlgoTrader()
+    algotrader = AlgoTrader(5, ticker)
     algotrader.streamlit_initilise()
     #algotrader.load_visualisations()
     algotrader.load_algorithm(DualSMASignal())
