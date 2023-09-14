@@ -24,13 +24,13 @@ default_new_data = pd.read_csv("Datasets/SPY_input.csv",)
 class AlgoTrader():
 
     def __init__(self, window, ticker):
-         
+        
         self.models_dict = {
             
-            "SPY": load_model('C:\Users\yinki\OneDrive\Python\algotrading\model_SPY.keras'),
-            "MSFT": load_model('C:\Users\yinki\OneDrive\Python\algotrading\model_MSFT.keras'),
-            "AAPL": load_model('C:\Users\yinki\OneDrive\Python\algotrading\model_AAPL.keras'),
-            "GOOG": load_model('C:\Users\yinki\OneDrive\Python\algotrading\model_GOOG.keras')
+            "SPY": load_model('model_SPY.keras'),
+            "MSFT": load_model('model_MSFT.keras'),
+            "AAPL": load_model('model_AAPL.keras'),
+            "GOOG": load_model('model_GOOG.keras')
         }
         self.algorithm = None
         self.model = None

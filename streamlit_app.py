@@ -22,6 +22,8 @@ st.title("Stock Price Prediction App")
 ticker = st.selectbox("Choose stock ticker", ("SPY", "AAPL", "MSFT", "GOOG"))
 default_training_data = pd.read_csv(f"Datasets/{ticker}_30years.csv", index_col="Date")
 
+st.write(os.getcwd())
+
 if default_training_data is not None:
     st.set_option('deprecation.showPyplotGlobalUse', False)
     #df = pd.read_csv(uploaded_file)
