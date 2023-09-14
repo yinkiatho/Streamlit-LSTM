@@ -14,14 +14,6 @@ from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LinearRegression
 from sklearn.metrics import mean_squared_error
 
-models_dict = {
-    "SPY" : load_model('model_SPY.keras'),
-    "MSFT": load_model('model_MSFT.keras'),
-    "AAPL": load_model('model_AAPL.keras'),
-    "GOOG": load_model('model_GOOG.keras')
-}
-
-
 # Define the Streamlit app
 st.title("Stock Price Prediction App")
 
