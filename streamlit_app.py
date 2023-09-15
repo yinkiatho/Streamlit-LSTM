@@ -1,11 +1,11 @@
 import os
 import streamlit as st
 import pandas as pd
-import pandas_profiling
+#import pandas_profiling
 import numpy as np
 from math import sqrt
 from keras.models import load_model
-from streamlit_pandas_profiling import st_profile_report
+#from streamlit_pandas_profiling import st_profile_report
 from streamlit_extras.metric_cards import style_metric_cards
 
 
@@ -50,9 +50,9 @@ if default_training_data is not None:
     st.write("The data is loaded and displayed below")
     st.write(default_training_data)
     
-    pr = default_training_data.profile_report()
+    #pr = default_training_data.profile_report()
     
-    st_profile_report(pr)
+    #st_profile_report(pr)
     
     #Data Exploration
     st.subheader("Data Exploration")
