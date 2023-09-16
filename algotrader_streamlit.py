@@ -27,10 +27,10 @@ class AlgoTrader():
         
         self.models_dict = {
             
-            "SPY": load_model('model_SPY.keras'),
-            "MSFT": load_model('model_MSFT.keras'),
-            "AAPL": load_model('model_AAPL.keras'),
-            "GOOG": load_model('model_GOOG.keras')
+            "SPY": load_model('model_SPY.h5'),
+            "MSFT": load_model('model_MSFT.h5'),
+            "AAPL": load_model('model_AAPL.h5'),
+            "GOOG": load_model('model_GOOG.h5')
         }
         self.algorithm = None
         self.model = None
@@ -47,7 +47,7 @@ class AlgoTrader():
         self.cash = 1000000
 
     def load_lstm_model(self):
-        #path = "/model_" + self.ticker + ".keras"
+        #path = "/model_" + self.ticker + ".h5"
         #print(path)
         try:
         #    self.model = load_model(path)
@@ -221,7 +221,7 @@ class AlgoTrader():
             train_x, train_y, epochs=int(params.iloc[0, 0]), batch_size=int(params.iloc[0, 1]), verbose=2)
 
         self.model = model
-        model.save("model_" + self.ticker + ".keras")
+        model.save("model_" + self.ticker + ".h5")
 
         # Predicting Testing Dataset
         # Predicting Testing Dataset

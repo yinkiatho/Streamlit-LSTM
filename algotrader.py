@@ -168,7 +168,7 @@ class AlgoTrader():
             train_x, train_y, epochs=int(params.iloc[0, 0]), batch_size=int(params.iloc[0, 1]), verbose=2)
 
         self.model = model
-        model.save("model_" + self.ticker + ".keras")
+        model.save("model_" + self.ticker + ".h5")
 
         # Predicting Testing Dataset
         # Predicting Testing Dataset
