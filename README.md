@@ -1,29 +1,26 @@
 # LSTM and SMA SPY Trading Algorithm - Stock Price Prediction App
-This Streamlit application is designed to help you explore and analyze the historical stock price data of SPY (SPDR S&P 500 ETF Trust) using a combination of LSTM (Long Short-Term Memory) for stock price prediction and SMA (Simple Moving Average) for technical analysis. You can also assess the performance of a mean reversion strategy based on the LSTM predictions.
+================
+
+This Streamlit application is designed to help you explore and analyze the historical stock price data of various stocks using a combination of LSTM (Long Short-Term Memory) for stock price prediction and SMA (Simple Moving Average) for technical analysis. You can also assess the performance of a mean reversion strategy based on the LSTM predictions.
+
 
 # Getting Started
 To get started with the app, follow these simple steps:
 
-Choose Stock Ticker: Select "SPY" from the dropdown menu to load the historical stock price data for SPY.
+Choose Stock Ticker: Select desired ticker from the dropdown menu to load the historical stock price data for the stock.
 
 
-Data Overview: This section provides a brief overview of the loaded data, including the number of rows, data types of each column, and summary statistics.
+## Features:
+- Data Overview: This section provides a brief overview of the loaded data, including the number of rows, data types of each column, and summary statistics.
+- Data Visualization: Explore various data visualizations to gain insights into stock's historical stock performance.
+- Line Chart of Prices Over Time: Visualize historical closing, opening, high, and adjusted close prices for SPY stock over a 30-year timeframe.
+- Line Chart of Volume Over Time: Examine the historical volume and ADV20 (average trading volume over the previous 20 trading days) for SPY stock over the same period. This helps you understand trading volume trends.
+- SMA over Time: View Simple Moving Averages (SMA) of different periods (SMA5, SMA20, SMA50, SMA252) along with the adjusted close price to identify price trends.
+- Investigating Returns: Analyze daily and monthly returns over the 30-year timeframe. Histograms are provided to visualize the distribution and central tendencies of these returns.
+- Technical Analysis: Dive into technical indicators to assess stock's trading conditions.
+- Stochastic Oscillator: Analyze the Stochastic Oscillator indicator.
+- Relative Strength Index (RSI) & Commodity Channel Index (CCI): Examine RSI and CCI indicators.
 
-Data Visualization: Explore various data visualizations to gain insights into SPY's historical stock performance.
-
-Line Chart of Prices Over Time: Visualize historical closing, opening, high, and adjusted close prices for SPY stock over a 30-year timeframe.
-
-Line Chart of Volume Over Time: Examine the historical volume and ADV20 (average trading volume over the previous 20 trading days) for SPY stock over the same period. This helps you understand trading volume trends.
-
-SMA over Time: View Simple Moving Averages (SMA) of different periods (SMA5, SMA20, SMA50, SMA252) along with the adjusted close price to identify price trends.
-
-Investigating Returns: Analyze daily and monthly returns over the 30-year timeframe. Histograms are provided to visualize the distribution and central tendencies of these returns.
-
-Technical Analysis: Dive into technical indicators to assess SPY's trading conditions.
-
-Stochastic Oscillator: Analyze the Stochastic Oscillator indicator.
-
-Relative Strength Index (RSI) & Commodity Channel Index (CCI): Examine RSI and CCI indicators.
 
 LSTM Prediction on Test Data: Explore the LSTM-based stock price prediction on the test data and assess its accuracy.
 
@@ -39,15 +36,16 @@ Sharpe Ratio: A measure of risk-adjusted return.
 
 Total Profit, CAGR, Sharpe Ratio, and Profit vs. Date: Visualize these key metrics to assess the performance of the trading strategy.
 
-#How to Run the App
+**How to run this demo**
 To run this Streamlit app locally, follow these steps:
 
-Clone this repository to your local machine.
-Install the required Python packages listed in the requirements.txt file using pip install -r requirements.txt.
-Run the app using the following command:
-bash
-Copy code
+1. Clone this repository to your local machine.
+2. Install the required Python packages listed in the requirements.txt file using pip install -r requirements.txt.
+3. Run the app using the following command:
+4. 
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 streamlit run app.py
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 This will launch the app in your web browser, allowing you to interact with the data and explore the trading algorithm's performance.
 
