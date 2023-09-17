@@ -3,11 +3,18 @@
 
 This Streamlit application is designed to help you explore and analyze the historical stock price data of various stocks using a combination of LSTM (Long Short-Term Memory) for stock price prediction and SMA (Simple Moving Average) for technical analysis. You can also assess the performance of a mean reversion strategy based on the LSTM predictions.
 
+# LSTM Model
+- Long-Short Term Memory Model build with tensorflow and keras.
+- Built with time-series cross validation method as well as grid searching for parameter optimization
+- Predicts next day Close price with window=5 past close prices
+- ref. algotrader_streamlit.py
+  
 
 # Getting Started
 To get started with the app, follow these simple steps:
 
-Choose Stock Ticker: Select desired ticker from the dropdown menu to load the historical stock price data for the stock.
+1. Run https://yinkiatalgo.streamlit.app
+2. Choose Stock Ticker: Select desired ticker from the dropdown menu to load the historical stock price data for the stock.
 
 
 ## Features:
