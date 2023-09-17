@@ -12,6 +12,7 @@ from sklearn.preprocessing import MinMaxScaler
 import yfinance as yf
 import datetime
 import matplotlib.pyplot as plt
+import pandas_ta as ta
 import seaborn as sns
 from algorithm import DualSMASignal
 
@@ -281,6 +282,38 @@ class AlgoTrader():
         # add in change in monthly vriation rapp
         df["rapp"] = df["Close"].shift(-21).divide(df["Close"])
         # df.dropna(inplace=True)
+        ShortEMA = df["Close"].ewm(span=12, adjust=False).mean()
+
+
+        # Calculate the long term exponential moving average
+        LongEMA = df["Close"].ewm(span=26, adjust=False).mean()
+        # Calculate the MACD line
+        MACD = ShortEMA - LongEMA   
+        # Calculate the signal line
+        signal = MACD.ewm(span=9, adjust=False).mean()
+        # Create new columns for the data
+        df["MACD"] = MACD
+        df["Signal Line"] = signal
+
+        # Find minimum of 14 consecutive values by rolling function
+        df['14-low'] = df['Low'].rolling(14).min()
+        df['14-high'] = df['High'].rolling(14).max()
+
+        # Apply the formula
+        df['%K'] = (df['Close'] - df['14-low']) * \
+            100/(df['14-high'] - df['14-low'])
+        df['%D'] = df['%K'].rolling(3).mean()
+
+
+        df["RSI(2)"] = ta.rsi(df['Close'], length=2)
+        df["RSI(7)"] = ta.rsi(df['Close'], length=7)
+        df["RSI(14)"] = ta.rsi(df['Close'], length=14)
+        df["CCI(30)"] = ta.cci(close=df['Close'],
+                       length=30, high=df["High"], low=df["Low"])
+        df["CCI(50)"] = ta.cci(close=df['Close'],
+                       length=50, high=df["High"], low=df["Low"])
+        df["CCI(100)"] = ta.cci(close=df['Close'],
+                        length=100, high=df["High"], low=df["Low"])
 
         self.default_data = df
 
