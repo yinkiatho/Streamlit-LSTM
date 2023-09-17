@@ -6,6 +6,7 @@ To get started with the app, follow these simple steps:
 
 Choose Stock Ticker: Select "SPY" from the dropdown menu to load the historical stock price data for SPY.
 
+
 Data Overview: This section provides a brief overview of the loaded data, including the number of rows, data types of each column, and summary statistics.
 
 Data Visualization: Explore various data visualizations to gain insights into SPY's historical stock performance.
@@ -38,7 +39,7 @@ Sharpe Ratio: A measure of risk-adjusted return.
 
 Total Profit, CAGR, Sharpe Ratio, and Profit vs. Date: Visualize these key metrics to assess the performance of the trading strategy.
 
-How to Run the App
+#How to Run the App
 To run this Streamlit app locally, follow these steps:
 
 Clone this repository to your local machine.
@@ -47,6 +48,7 @@ Run the app using the following command:
 bash
 Copy code
 streamlit run app.py
+
 This will launch the app in your web browser, allowing you to interact with the data and explore the trading algorithm's performance.
 
 Feel free to contribute, provide feedback, or report any issues related to this app. Happy exploring and trading!
