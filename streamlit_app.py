@@ -22,8 +22,7 @@ from algotrader_streamlit import AlgoTrader
 
 st.set_page_config(
     page_title="LSTM Stock Price Prediction App",
-    page_icon="✅",
-    layout="wide",
+    page_icon="🧊",
 )
 st.title('LSTM and SMA SPY Trading ALgorithm')
 
