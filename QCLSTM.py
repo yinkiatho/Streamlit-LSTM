@@ -14,7 +14,7 @@ import yfinance as yf
 import datetime
 import matplotlib.pyplot as plt
 import seaborn as sns
-from algorithm import DualSMASignal
+from DualSMASignal import DualSMASignal
 
 default_data = pd.read_csv("../Datasets/SPY_raw.csv",
                            index_col="Date", parse_dates=True)

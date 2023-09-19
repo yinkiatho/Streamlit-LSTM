@@ -17,7 +17,7 @@ import plotly.graph_objects as go
 
 
 import matplotlib.pyplot as plt
-from algorithm import DualSMASignal
+from DualSMASignal import DualSMASignal
 from algotrader_streamlit import AlgoTrader
 
 st.set_page_config(
@@ -31,7 +31,9 @@ st.title('LSTM and SMA SPY Trading ALgorithm')
 st.title("Stock Price Prediction App")
 
 # Upload a CSV file containing historical stock data
-ticker = st.selectbox("Choose stock ticker", ("SPY", "AAPL", "MSFT", "GOOG"))
+ticker = st.selectbox("Choose stock ticker", ("SPY", "AAPL", 
+                                              #"MSFT", "GOOG" 
+                                            ))
 default_training_data = pd.read_csv(
     f"Datasets/{ticker}_30years.csv", index_col="Date", parse_dates=True)
 

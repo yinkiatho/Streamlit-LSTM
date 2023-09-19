@@ -1,5 +1,5 @@
 from algotrader import AlgoTrader
-from algorithm import DualSMASignal
+from DualSMASignal import DualSMASignal
 
 import pandas as pd
 import numpy as np

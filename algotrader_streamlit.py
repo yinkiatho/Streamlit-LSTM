@@ -14,7 +14,7 @@ import datetime
 import matplotlib.pyplot as plt
 import pandas_ta as ta
 import seaborn as sns
-from algorithm import DualSMASignal
+from DualSMASignal import DualSMASignal
 
 default_data = pd.read_csv("Datasets/SPY_raw.csv",
                            index_col="Date", parse_dates=True)
@@ -29,9 +29,9 @@ class AlgoTrader():
         self.models_dict = {
             
             "SPY": load_model('model_SPY.h5'),
-            "MSFT": load_model('model_MSFT.h5'),
+            #"MSFT": load_model('model_MSFT.h5'),
             "AAPL": load_model('model_AAPL.h5'),
-            "GOOG": load_model('model_GOOG.h5')
+            #"GOOG": load_model('model_GOOG.h5')
         }
         self.algorithm = None
         self.model = None
@@ -303,7 +303,6 @@ class AlgoTrader():
         df['%K'] = (df['Close'] - df['14-low']) * \
             100/(df['14-high'] - df['14-low'])
         df['%D'] = df['%K'].rolling(3).mean()
-
 
         df["RSI(2)"] = ta.rsi(df['Close'], length=2)
         df["RSI(7)"] = ta.rsi(df['Close'], length=7)
@@ -721,6 +720,104 @@ class AlgoTrader():
         #        books = pd.concat([books, new_row], axis=0, ignore_index=True)
         #        self.cash += close
         #elif long < short:
+        #    for i in range(short - long):
+        #        new_row = pd.DataFrame(
+        #            {"Date": date, "Action": "Buy", "Price": close, "Quantity": 1}, index=[0])
+        #        books = pd.concat([books, new_row], axis=0, ignore_index=True)
+        #        self.cash -= close
+
+        self.books = books
+        self.past_close = past_close
+
+        print("Trading completed")
+        print(f"Final holdings: {books}")
+        
+    def run_mean_reversion_volatility_algorithm(self, input_data=default_new_data):
+
+        past_close = self.default_past_close
+        books = pd.DataFrame(
+            columns=["Date", "Action", "Price", "Quantity"])
+
+        date = None
+        close = 0
+        long, short = 0, 0
+
+        for i in range(len(input_data)):
+
+            # Read row_data
+            row_data = pd.DataFrame(input_data.iloc[i, :]).transpose()
+            print(f"Row {i}: ")
+            # print(row_data)
+            date = row_data.iloc[0, 0]
+            close = row_data.iloc[0, 4]
+           # print(f"Date: {row_data.iloc[0, 0]}")
+            # print(f"Close Price: {row_data.iloc[0, 3]}")
+
+            # Add predicted close price into default_data
+            # predicted_close = self.predict(row_data)
+
+            self.add_new_row(row_data)
+            # print(pd.DataFrame(self.default_data.iloc[-1:, :]))
+            # signal = self.algorithm.generate_sma_signals(
+            #    pd.DataFrame(self.default_data.iloc[-1:, :]))
+
+            new_row = pd.DataFrame(
+                {"Actual Close Price": close, "Predicted Close Price": 0}, index=[0])
+            past_close = pd.concat(
+                [past_close, new_row], axis=0, ignore_index=True)
+
+            # Execute Mean-Reversion Strategy
+            # print(past_close.iloc[-1:-4:-1, :])
+            if close < past_close.iloc[-1:-4:-1, 0].mean():
+                
+                #Check if volatility is at the highest, if so execute 2 times the amount
+                if past_close.iloc[-1:-4:-1, 0].std() > past_close.iloc[-1:-4:-1, 0].mean():
+                # Buy stock
+                print(
+                    f"Buying SPY500 on {date}, buying at {close}")
+                self.cash -= close * 10
+                new_row = pd.DataFrame(
+                    {"Date": date, "Action": "Buy", "Price": close, "Quantity": 10}, index=[0])
+                books = pd.concat([books, new_row], axis=0, ignore_index=True)
+
+                # print(f"Current holdings: {books}")
+
+                # add to past_close
+                new_row = pd.DataFrame(
+                    {"Actual Close Price": close, "Predicted Close Price": 0}, index=[0])
+                past_close = pd.concat(
+                    [past_close, new_row], axis=0, ignore_index=True)
+
+                long += 10
+
+            elif close > past_close.iloc[-1:-4:-1, 0].mean():
+                # Sell stock
+                print(
+                    f"Selling SPY500 on {date}, selling at {close}")
+                self.cash += close * 10
+
+                new_row = pd.DataFrame(
+                    {"Date": date, "Action": "Sell", "Price": close, "Quantity": 10}, index=[0])
+                books = pd.concat([books, new_row], axis=0, ignore_index=True)
+
+                # print(f"Current holdings: {books}")
+
+                # add to past_close
+                new_row = pd.DataFrame(
+                    {"Actual Close Price": close, "Predicted Close Price": 0}, index=[0])
+                past_close = pd.concat(
+                    [past_close, new_row], axis=0, ignore_index=True)
+
+                short += 10
+
+        # Clear holdings at the end of the day
+        # if long > short:
+        #    for i in range(long - short):
+        #        new_row = pd.DataFrame(
+        #            {"Date": date, "Action": "Sell", "Price": close, "Quantity": 1}, index=[0])
+        #        books = pd.concat([books, new_row], axis=0, ignore_index=True)
+        #        self.cash += close
+        # elif long < short:
         #    for i in range(short - long):
         #        new_row = pd.DataFrame(
         #            {"Date": date, "Action": "Buy", "Price": close, "Quantity": 1}, index=[0])
