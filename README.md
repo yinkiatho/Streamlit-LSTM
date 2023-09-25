@@ -92,6 +92,7 @@ Metrics and Features:
 - Calculate 3 day rolling closing price mean
 - Compare with current closing price
 - Long if > , short if <
+
 ![alt text](https://github.com/yinkiatho/Streamlit-LSTM/blob/main/Pictures/mean_reversion.png)
 
 
@@ -99,6 +100,7 @@ Metrics and Features:
 - Predict next day closing price
 - If predicted next day closing price > today predicted closing price: buy at open and close position at close price next day
 - If predicted next day closing price < today predicted closing price: short at open and close position at close price next day
+
 ![alt text](https://github.com/yinkiatho/Streamlit-LSTM/blob/main/Pictures/lstm_trading.png)
 
 
