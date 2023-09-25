@@ -18,7 +18,7 @@ To get started with the app, follow these simple steps:
 
 
 ## Features:
-- Data Overview: This section provides a brief overview of the loaded data, including the number of rows, data types of each column, and summary statistics.
+- Data Overview
   
 - Data Visualization: Explore various data visualizations to gain insights into stock's historical stock performance.
   
@@ -37,9 +37,46 @@ To get started with the app, follow these simple steps:
 - Relative Strength Index (RSI) & Commodity Channel Index (CCI): Examine RSI and CCI indicators.
 
 
+### Data Overview:
+This section provides a brief overview of the loaded data, including the number of rows, data types of each column, and summary statistics.
+![alt text](https://github.com/yinkiatho/Streamlit-LSTM/blob/main/Pictures/data_overview.png)
+
+
+### Data Visualisation:
+![alt text](https://github.com/yinkiatho/Streamlit-LSTM/blob/main/Pictures/data_exploration.png)
+
+
+### Line Chart of Prices Over Time: Visualize historical closing, opening, high, and adjusted close prices for SPY stock over a 30-year timeframe.
+- Visualize historical closing, opening, high, and adjusted close prices for SPY stock over a 30-year timeframe.
+![alt text](https://github.com/yinkiatho/Streamlit-LSTM/blob/main/Pictures/data_viz1.png)
+
+
+### Line Chart of Volume over Time and Different SMAs over Time
+- Examine the historical volume and ADV20 (average trading volume over the previous 20 trading days) for SPY stock over the same period. This helps you understand trading volume trends.
+- View Simple Moving Averages (SMA) of different periods (SMA5, SMA20, SMA50, SMA252) along with the adjusted close price to identify price trends
+![alt text](https://github.com/yinkiatho/Streamlit-LSTM/blob/main/Pictures/data_linechart2.png)
+
+
+### Investigating Returns
+Analyze daily and monthly returns over the 30-year timeframe. Histograms are provided to visualize the distribution and central tendencies of these returns.
+![alt text](https://github.com/yinkiatho/Streamlit-LSTM/blob/main/Pictures/returns.png)
+
+
+## Technical Analysis
+ 
+### Stochastic Oscillator: Analyze the Stochastic Oscillator indicator.
+![alt text](https://github.com/yinkiatho/Streamlit-LSTM/blob/main/Pictures/stochastic.png)
+
+### Relative Strength Index (RSI) & Commodity Channel Index (CCI): Examine RSI and CCI indicators.
+![alt text](https://github.com/yinkiatho/Streamlit-LSTM/blob/main/Pictures/stochastic.png)
+
+
+
+
 # LSTM Prediction on Test Data: Explore the LSTM-based stock price prediction on the test data and assess its accuracy.
 
-Mean Reversion Strategy on Input Data: Learn about the Long-Short Intra-Day strategy. For each stock prediction for the next day, this strategy buys the stock at the open price and sells it at the close price if the prediction is positive. Conversely, it short-sells the stock at the open price and closes the short-sell at the close price if the prediction is negative.
+### LSTM Test Results
+![alt text](https://github.com/yinkiatho/Streamlit-LSTM/blob/main/Pictures/lstm.png)
 
 Metrics and Features:
 - Transaction History and Profit: Review the transaction history and calculate the following performance metrics:
@@ -49,6 +86,20 @@ Metrics and Features:
 - Compound Annual Growth Rate (CAGR): The annualized rate of return.
 
 - Sharpe Ratio: A measure of risk-adjusted return.
+
+
+## Mean Reversion Strategy
+- Calculate 3 day rolling closing price mean
+- Compare with current closing price
+- Long if > , short if <
+![alt text](https://github.com/yinkiatho/Streamlit-LSTM/blob/main/Pictures/mean_reversion.png)
+
+
+## LSTM Intra-Day Strategy
+- Predict next day closing price
+- If predicted next day closing price > today predicted closing price: buy at open and close position at close price next day
+- If predicted next day closing price < today predicted closing price: short at open and close position at close price next day
+![alt text](https://github.com/yinkiatho/Streamlit-LSTM/blob/main/Pictures/lstm_trading.png)
 
 
 **How to run this demo**
