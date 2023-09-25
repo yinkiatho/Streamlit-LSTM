@@ -282,45 +282,60 @@ if default_training_data is not None:
         algotrader.load_algorithm(DualSMASignal())
         algotrader.run_mean_reversion_algorithm(default_new_data)
 
-        total_profit, books = algotrader.tally_books()
+        total_profit, books, long, short, unrealized, trades = algotrader.tally_books()
         # algotrader.plot_results()
 
         # Display predictions and metrics
-        st.markdown("### Transaction History and Profit")
-        st.dataframe(books)
         # st.subheader("Total Profit")
         # st.write(total_profit)
 
         # create three columns
-        kpi1, kpi2, kpi3 = st.columns(3)
+        kpi1, kpi2, kpi3, kpi4 = st.columns(4)
 
         # fill in those three columns with respective metrics or KPIs
         kpi1.metric(
-            label="Total Profit ＄",
-            value=round(total_profit),
-            # delta=round(total_profit) - 10,
+            label="Current Position ＄ (Initial Position ＄1,000,000)",
+            value=round(total_profit) + 1000000,
+            delta=round(total_profit),
         )
 
         kpi2.metric(
             label="CAGR %",
             value=round((((total_profit + 1000000)/(1000000))
-                        ** (1.0/(175/365)) - 1)*100, 2),
+                        ** (1.0/(175/365)) - 1) * 100, 2),
             # delta=-10 + count_married,
         )
 
-        account_values = np.array(books.Profit)
+        account_values = np.array(books["Current Profit"])
 
         kpi3.metric(
             label="Sharpe Ratio",
             value=f"{sharpe(account_values, 0.04, 252):.2f}",
             delta=round((sharpe(account_values, 0.04, 252) - 1.25), 2)
         )
+        
+        kpi4.metric(
+            label="Unrealized Gains/Loss ＄",
+            value=round(trades["Unrealized P&L"].sum(), 2),
+            # delta=round(total_profit, 2)
+        )
 
         style_metric_cards()
+        
+        currpos, history = st.tabs([
+            "Current Position", "Order History"])
+        
+        with currpos:
+            st.subheader("Current Position")
+            st.dataframe(trades)
+            
+        with history:
+            st.subheader("Order History")
+            st.dataframe(books)
 
         st.markdown("### Profit vs. Date")
         fig, ax = plt.subplots(figsize=(8, 6))
-        ax.plot(books.Date, books.Profit, label="Profit Level ")
+        ax.plot(books.Date, books["Current Profit"], label="Profit Level ")
         ax.set_xlabel("Date")
         ax.set_ylabel("Profit")
         ax.set_title("Profit vs. Date")
@@ -336,20 +351,18 @@ if default_training_data is not None:
         algotrader.load_algorithm(DualSMASignal())
         algotrader.run_lstm_algorithm(default_new_data)
 
-        total_profit, books = algotrader.tally_books()
+        total_profit, books, long, short, unrealized, trades = algotrader.tally_books()
         # algotrader.plot_results()
 
-        # Display predictions and metrics
-        st.subheader("Transaction History and Profit")
-        st.dataframe(books)
+        
         # create three columns
-        kpi1, kpi2, kpi3 = st.columns(3)
+        kpi1, kpi2, kpi3, kpi4 = st.columns(4)
 
         # fill in those three columns with respective metrics or KPIs
         kpi1.metric(
-            label="Total Profit ＄",
-            value=round(total_profit),
-            # delta=round(total_profit) - 10,
+            label="Current Position ＄ (Initial Position ＄1,000,000)",
+            value=round(total_profit) + 1000000,
+            delta=round(total_profit),
         )
 
         kpi2.metric(
@@ -359,19 +372,36 @@ if default_training_data is not None:
             # delta=-10 + count_married,
         )
 
-        account_values = np.array(books.Profit)
+        account_values = np.array(books["Current Profit"])
 
         kpi3.metric(
             label="Sharpe Ratio",
             value=f"{sharpe(account_values, 0.04, 252):.2f}",
             delta=round((sharpe(account_values, 0.04, 252) - 1.25), 2)
         )
+        
+        kpi4.metric(
+            label="Unrealized Gains/Loss ＄",
+            value=round(trades["Unrealized P&L"].sum(), 2),
+            #delta=round(total_profit, 2)
+        )
 
         style_metric_cards()
+        
+        currpos, history = st.tabs([
+            "Current Position", "Order History"])
+
+        with currpos:
+            st.subheader("Current Position")
+            st.dataframe(trades)
+
+        with history:
+            st.subheader("Order History")
+            st.dataframe(books)
 
         st.markdown("### Profit vs. Date")
         fig, ax = plt.subplots(figsize=(8, 6))
-        ax.plot(books.Date, books.Profit, label="Profit Level ")
+        ax.plot(books.Date, books["Current Profit"], label="Profit Level ")
         ax.set_xlabel("Date")
         ax.set_ylabel("Profit")
         ax.set_title("Profit vs. Date")

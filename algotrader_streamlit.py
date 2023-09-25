@@ -499,7 +499,7 @@ class AlgoTrader():
                     f"Buying SPY500 on {date}, buying at {open} selling at {close}")
                 self.cash += (open - close) * 100
                 new_row = pd.DataFrame(
-                    {"Date": date, "Action": "Buy", "Price": open - close, "Quantity": 100}, index=[0])
+                    {"Date": date, "Action": "Intraday Buy_Sell", "Price": open - close, "Quantity": 100}, index=[0])
                 books = pd.concat([books, new_row], axis=0, ignore_index=True)
 
                 print(f"Current holdings: {books}")
@@ -515,7 +515,7 @@ class AlgoTrader():
                 self.cash += (close - open) * 100
 
                 new_row = pd.DataFrame(
-                    {"Date": date, "Action": "Sell", "Price": close - open, "Quantity": 100}, index=[0])
+                    {"Date": date, "Action": "Intraday Sell_Buy", "Price": close - open, "Quantity": 100}, index=[0])
                 books = pd.concat([books, new_row], axis=0, ignore_index=True)
 
                 print(f"Current holdings: {books}")
@@ -732,30 +732,163 @@ class AlgoTrader():
         print("Trading completed")
         print(f"Final holdings: {books}")
         
-    
+    def run_mean_reversion_volatility_algorithm(self, input_data=default_new_data):
+
+        past_close = self.default_past_close
+        books = pd.DataFrame(
+            columns=["Date", "Action", "Price", "Quantity"])
+
+        date = None
+        close = 0
+        long, short = 0, 0
+
+        for i in range(len(input_data)):
+
+            # Read row_data
+            row_data = pd.DataFrame(input_data.iloc[i, :]).transpose()
+            print(f"Row {i}: ")
+            # print(row_data)
+            date = row_data.iloc[0, 0]
+            close = row_data.iloc[0, 4]
+           # print(f"Date: {row_data.iloc[0, 0]}")
+            # print(f"Close Price: {row_data.iloc[0, 3]}")
+
+            # Add predicted close price into default_data
+            # predicted_close = self.predict(row_data)
+
+            self.add_new_row(row_data)
+            # print(pd.DataFrame(self.default_data.iloc[-1:, :]))
+            # signal = self.algorithm.generate_sma_signals(
+            #    pd.DataFrame(self.default_data.iloc[-1:, :]))
+
+            new_row = pd.DataFrame(
+                {"Actual Close Price": close, "Predicted Close Price": 0}, index=[0])
+            past_close = pd.concat(
+                [past_close, new_row], axis=0, ignore_index=True)
+            
+            print(self.default_data.iloc[-1, 6] ==
+                  self.default_data.iloc[-3:, 6].max())
+
+            # Execute Mean-Reversion Strategy
+            # print(past_close.iloc[-1:-4:-1, :])
+            if close < past_close.iloc[-1:-4:-1, 0].mean():
+                
+                quantitiy = 10
+                
+                #Check if volatility is at the highest, if so execute 2 times the amount
+                if self.default_data.iloc[-1, 6] == self.default_data.iloc[-3:, 6].max():
+                    quantitiy = 20
+                # Buy stock
+                print(
+                    f"Buying SPY500 on {date}, buying at {close}")
+                self.cash -= close * quantitiy
+                new_row = pd.DataFrame(
+                    {"Date": date, "Action": "Buy", "Price": close, "Quantity": quantitiy}, index=[0])
+                books = pd.concat([books, new_row], axis=0, ignore_index=True)
+
+                # print(f"Current holdings: {books}")
+
+                # add to past_close
+                new_row = pd.DataFrame(
+                    {"Actual Close Price": close, "Predicted Close Price": 0}, index=[0])
+                past_close = pd.concat(
+                    [past_close, new_row], axis=0, ignore_index=True)
+
+                long += quantitiy
+
+            elif close > past_close.iloc[-1:-4:-1, 0].mean():
+                quantitiy = 10
+
+                # Check if volatility is at the highest, if so execute 2 times the amount
+                if self.default_data.iloc[-1, 6] == self.default_data.iloc[-3:, 6].max():
+                    quantitiy = 20
+                    
+                # Sell stock
+                print(
+                    f"Selling SPY500 on {date}, selling at {close}")
+                self.cash += close * 10
+
+                new_row = pd.DataFrame(
+                    {"Date": date, "Action": "Sell", "Price": close, "Quantity": 10}, index=[0])
+                books = pd.concat([books, new_row], axis=0, ignore_index=True)
+
+                # print(f"Current holdings: {books}")
+
+                # add to past_close
+                new_row = pd.DataFrame(
+                    {"Actual Close Price": close, "Predicted Close Price": 0}, index=[0])
+                past_close = pd.concat(
+                    [past_close, new_row], axis=0, ignore_index=True)
+
+                short += 10
+
+        # Clear holdings at the end of the day
+        # if long > short:
+        #    for i in range(long - short):
+        #        new_row = pd.DataFrame(
+        #            {"Date": date, "Action": "Sell", "Price": close, "Quantity": 1}, index=[0])
+        #        books = pd.concat([books, new_row], axis=0, ignore_index=True)
+        #        self.cash += close
+        # elif long < short:
+        #    for i in range(short - long):
+        #        new_row = pd.DataFrame(
+        #            {"Date": date, "Action": "Buy", "Price": close, "Quantity": 1}, index=[0])
+        #        books = pd.concat([books, new_row], axis=0, ignore_index=True)
+        #        self.cash -= close
+
+        self.books = books
+        self.past_close = past_close
+
+        print("Trading completed")
+        print(f"Final holdings: {books}")
+
     def tally_books(self):
         books = self.books
+        
         total_profit = 0
+        long, short = 0, 0
         for i in range(len(books)):
             if books.iloc[i, 1] == "Buy":
                 total_profit -= books.iloc[i, 2] * books.iloc[i, 3]
             else:
                 total_profit += books.iloc[i, 2] * books.iloc[i, 3]
 
-        books['Profit'] = 0
+        books['Current Profit'] = 0
         position = 0
+        current_position = self.cash
+        unrealized = (long - short) * self.past_close.iloc[-1, 0]
 
         for index, row in books.iterrows():
-            if row['Action'] == 'Buy':
+            if row['Action'] == 'Buy' or row["Action"] == "Intraday Buy_Sell":
                 position -= float(row['Quantity'] * row['Price'])
-            elif row['Action'] == 'Sell':
+                long += row['Quantity']
+            elif row['Action'] == 'Sell' or row["Action"] == "Intraday Sell_Buy":
                 position += float(row['Quantity'] * row['Price'])
-            books.at[index, 'Profit'] = position
+                short += row['Quantity']
+            books.at[index, 'Current Profit'] = position
 
+
+
+        trades = books.copy(deep=True)
+        trades.rename(columns={'Price': 'Entry Price'}, inplace=True)
+        trades["Current Price"] = self.past_close.iloc[-1, 0]
+        trades["Unrealized P&L"] = 0
+        trades["Unrealized P&L"] = [((row["Current Price"] - row["Entry Price"]) * row["Quantity"]) 
+                                    if row["Action"] == "Buy" else row["Unrealized P&L"] for index, row in trades.iterrows()]
+        
+        trades["Unrealized P&L"] = [((row["Entry Price"] - row["Current Price"]) * row["Quantity"])
+                                    if row["Action"] == "Sell" else row["Unrealized P&L"] for index, row in trades.iterrows()]
+        
+        trades["% Change"] = [(((row["Current Price"] - row["Entry Price"]) / row["Entry Price"]) * 100)
+                              if row["Action"] == "Buy" else
+                              (((row["Entry Price"] - row["Current Price"]) / row["Entry Price"]) * 100) for index, row in trades.iterrows()]
+        
+        trades = trades.drop(columns=["Current Profit"], inplace=False)
+        
         self.books = books
         print(f"Total profit: {total_profit}")
 
-        return [total_profit, books]
+        return [total_profit, books, long, short, unrealized, trades]
 
     def plot_profit(self):
         books = self.books
