@@ -486,6 +486,7 @@ class AlgoTrader():
             # Add predicted close price into default_data
             predicted_close = self.predict(row_data)
             past_predicted = past_close.iloc[-1, 1]
+            
             new_row = pd.DataFrame(
                 {"Actual Close Price": close, "Predicted Close Price": predicted_close}, index=[0])
             past_close = pd.concat(

@@ -243,7 +243,7 @@ if default_training_data is not None:
     plt.plot(test_predict, label="prediction")
     plt.legend(fontsize=20)
     plt.grid(axis="both")
-    plt.title("Actual Close Price and Predicted Price on test set", fontsize=25)
+    plt.title("Actual Close Price and Predicte  d Price on test set", fontsize=25)
     st.pyplot()
 
     # tab1, tab2, tab3 = st.tabs(["SMA + LSTM Prediction on Input Data", "Mean Reversion Strategy on Input Data", "LSTM Strategy on Input Data"])

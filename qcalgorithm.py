@@ -5,15 +5,15 @@ import datetime
 import matplotlib.pyplot as plt
 from sklearn.model_selection import TimeSeriesSplit
 from keras.models import Sequential
-from keras.layers import Dense, Dropout, BatchNormalization, Conv1D, Flatten, MaxPooling1D, LSTM
-from keras.callbacks import EarlyStopping, ModelCheckpoint, TensorBoard
 from keras.models import load_model
 from sklearn.preprocessing import MinMaxScaler
 import yfinance as yf
 import datetime
 import matplotlib.pyplot as plt
+from keras.layers import Dense, Dropout, BatchNormalization, Conv1D, Flatten, MaxPooling1D, LSTM
 import seaborn as sns
-from DualSMASignal import DualSMASignal
+from AlgorithmImports import *
+
 
 default_data = pd.read_csv("Datasets/SPY_raw.csv",
                            index_col="Date", parse_dates=True)
@@ -21,22 +21,77 @@ default_data = pd.read_csv("Datasets/SPY_raw.csv",
 default_new_data = pd.read_csv("Datasets/SPY_input.csv",)
 
 
-class AlgoTrader():
+class MyAlgorithm(QCAlgorithm):
 
-    def __init__(self, window, ticker, data=None ):
+    def Initialize(self):
+        self.SetStartDate(2023, 1, 1)  # Set Start Date
+        self.SetCash(1000000)  # Set Strategy Cash
+        self.AddEquity("SPY", Resolution.Daily)  # Add SPY data
         self.algorithm = None
         self.model = None
-        self.window = window
+        self.window = 5
         self.scaler = MinMaxScaler(feature_range=(0, 1))
-        self.ticker = ticker
-        self.default_data = data
+        self.default_data = None
         self.default_test = []
         self.past_close = None
         self.default_past_close = None
         self.books = pd.DataFrame(
             columns=["Date", "Action", "Price", "Quantity"])
         self.cash = 1000000
+        self.load_lstm_model("model_SPY.h5")
+        self.ticker = "SPY"
+        
+        
 
+    def OnData(self, data):
+        df = default_data
+        past_close = self.default_past_close
+        books = pd.DataFrame(
+            columns=["Date", "Action", "Price", "Quantity"])
+        date = None
+        close = 0
+        long, short = 0, 0
+
+        # Make a historical call for yesterday's prices
+        ytd_data = self.History([self.Ticker,], 1, Resolution.Daily)
+        close = ytd_data["close"][0]
+        open = ytd_data["open"][0]
+        predicted_close = self.predict(ytd_data)
+        past_predicted = past_close.iloc[-1, 1]
+        new_row = pd.DataFrame(
+                {"Actual Close Price": close, "Predicted Close Price": predicted_close}, index=[0])
+        past_close = pd.concat(
+                [past_close, new_row], axis=0, ignore_index=True)
+        
+        if predicted_close > past_predicted:
+                # Buy stock
+            print(f"Buying SPY500 on {date}, buying at {open} selling at {close}")
+            self.cash += (open - close) * 100
+            new_row = pd.DataFrame(
+                    {"Date": date, "Action": "Intraday Buy_Sell", "Price": open - close, "Quantity": 100}, index=[0])
+            books = pd.concat([books, new_row], axis=0, ignore_index=True)
+
+            print(f"Current holdings: {books}")
+                
+            self.SetHoldings(self.Ticker, 100)
+            self.SetHoldings(self.Ticker, -100)
+
+
+        elif predicted_close < past_predicted:
+                # Sell stock
+            print(f"Selling SPY500 on {date}, selling at {open} buying at {close}")
+            self.cash += (close - open) * 100
+
+            new_row = pd.DataFrame(
+                    {"Date": date, "Action": "Intraday Sell_Buy", "Price": close - open, "Quantity": 100}, index=[0])
+            books = pd.concat([books, new_row], axis=0, ignore_index=True)
+
+            print(f"Current holdings: {books}")
+            
+            self.SetHoldings(self.Ticker, -100)
+            self.SetHoldings(self.Ticker, 100)
+            
+        
     def load_lstm_model(self, model_path):
         try:
             self.model = load_model(model_path)
@@ -294,187 +349,6 @@ class AlgoTrader():
         self.algorithm = algorithm
         
 
-    def run_sma_algorithm(self, input_data=default_new_data):
-
-        df = default_data
-        past_close = self.default_past_close
-        books = pd.DataFrame(
-            columns=["Date", "Action", "Price", "Quantity"])
-        date = None
-        close = 0
-        long, short = 0, 0
-
-        for i in range(len(input_data)):
-
-            # Read row_data
-            row_data = pd.DataFrame(input_data.iloc[i, :]).transpose()
-            print(f"Row {i}: ")
-            #print(row_data)
-            date = row_data.iloc[0, 0]
-            close = row_data.iloc[0, 3]
-            #print(f"Date: {row_data.iloc[0, 0]}")
-            #print(f"Close Price: {row_data.iloc[0, 3]}")
-
-            # Add predicted close price into default_data
-            predicted_close = self.predict(row_data)
-            print(pd.DataFrame(self.default_data.iloc[-1:, :]))
-            signal = self.algorithm.generate_sma_signals(
-                pd.DataFrame(self.default_data.iloc[-1:, :]))
-
-            if predicted_close > past_close.iloc[-1, 1] and signal[0]:
-                # Buy stock
-                print(
-                    f"Buying SPY500 on {date}, buying at {close}")
-                self.cash -= close
-                new_row = pd.DataFrame(
-                    {"Date": date, "Action": "Buy", "Price": close, "Quantity": 1}, index=[0])
-                books = pd.concat([books, new_row], axis=0, ignore_index=True)
-
-                print(f"Current holdings: {books}")
-
-                # add to past_close
-                new_row = pd.DataFrame(
-                    {"Actual Close Price": close, "Predicted Close Price": predicted_close}, index=[0])
-                past_close = pd.concat(
-                    [past_close, new_row], axis=0, ignore_index=True)
-                
-                long += 1
-
-            elif predicted_close < past_close.iloc[-1, 1] and not signal[0]:
-                # Sell stock
-                print(
-                    f"Selling SPY500 on {date}, selling at {close}")
-                self.cash += close
-
-                new_row = pd.DataFrame(
-                    {"Date": date, "Action": "Sell", "Price": close, "Quantity": 1}, index=[0])
-                books = pd.concat([books, new_row], axis=0, ignore_index=True)
-
-                print(f"Current holdings: {books}")
-
-                # add to past_close
-                new_row = pd.DataFrame(
-                    {"Actual Close Price": close, "Predicted Close Price": predicted_close}, index=[0])
-                past_close = pd.concat(
-                    [past_close, new_row], axis=0, ignore_index=True)
-                
-                short += 1
-                
-                
-        # Clear holdings at the end of the day
-        if long > short:
-            for i in range(long - short):
-                new_row = pd.DataFrame(
-                    {"Date": date, "Action": "Sell", "Price": close, "Quantity": 1}, index=[0])
-                books = pd.concat([books, new_row], axis=0, ignore_index=True)
-                self.cash += close
-        elif long < short:
-            for i in range(short - long):
-                new_row = pd.DataFrame(
-                    {"Date": date, "Action": "Buy", "Price": close, "Quantity": 1}, index=[0])
-                books = pd.concat([books, new_row], axis=0, ignore_index=True)
-                self.cash -= close
-                
-
-        self.books = books
-        self.past_close = past_close
-
-        print("Trading completed")
-        print(f"Final holdings: {books}")
-        
-    def run_mean_reversion_algorithm(self, input_data=default_new_data):
-
-        df = default_data
-        past_close = self.default_past_close
-        books = pd.DataFrame(
-            columns=["Date", "Action", "Price", "Quantity"])
-        
-        date = None
-        close = 0
-        long, short = 0, 0
-
-        for i in range(len(input_data)):
-
-            # Read row_data
-            row_data = pd.DataFrame(input_data.iloc[i, :]).transpose()
-            print(f"Row {i}: ")
-            #print(row_data)
-            date = row_data.iloc[0, 0]
-            close = row_data.iloc[0, 3]
-           # print(f"Date: {row_data.iloc[0, 0]}")
-            #print(f"Close Price: {row_data.iloc[0, 3]}")
-            long, short = 0, 0
-
-            # Add predicted close price into default_data
-            #predicted_close = self.predict(row_data)
-            
-            self.add_new_row(row_data)
-            #print(pd.DataFrame(self.default_data.iloc[-1:, :]))
-            #signal = self.algorithm.generate_sma_signals(
-            #    pd.DataFrame(self.default_data.iloc[-1:, :]))
-
-
-            #Execute Mean-Reversion Strategy
-            if close < past_close.iloc[-1:-4:-1, 0].mean():
-                # Buy stock
-                print(
-                    f"Buying SPY500 on {date}, buying at {close}")
-                self.cash -= close
-                new_row = pd.DataFrame(
-                    {"Date": date, "Action": "Buy", "Price": close, "Quantity": 1}, index=[0])
-                books = pd.concat([books, new_row], axis=0, ignore_index=True)
-
-                #print(f"Current holdings: {books}")
-
-                # add to past_close
-                new_row = pd.DataFrame(
-                    {"Actual Close Price": close, "Predicted Close Price": 0}, index=[0])
-                past_close = pd.concat(
-                    [past_close, new_row], axis=0, ignore_index=True)
-                
-                long += 1
-
-            elif close < past_close.iloc[-1:-4:-1, 0].mean():
-                # Sell stock
-                print(
-                    f"Selling SPY500 on {date}, selling at {close}")
-                self.cash += close
-
-                new_row = pd.DataFrame(
-                    {"Date": date, "Action": "Sell", "Price": close, "Quantity": 1}, index=[0])
-                books = pd.concat([books, new_row], axis=0, ignore_index=True)
-
-                #print(f"Current holdings: {books}")
-
-                # add to past_close
-                new_row = pd.DataFrame(
-                    {"Actual Close Price": close, "Predicted Close Price": 0}, index=[0])
-                past_close = pd.concat(
-                    [past_close, new_row], axis=0, ignore_index=True)
-                
-                short += 1
-                
-        #Clear holdings at the end of the day
-        if long > short:
-            for i in range(long - short):
-                new_row = pd.DataFrame(
-                    {"Date": date, "Action": "Sell", "Price": close, "Quantity": 1}, index=[0])
-                books = pd.concat([books, new_row], axis=0, ignore_index=True)
-                self.cash += close
-        elif long < short:
-            for i in range(short - long):
-                new_row = pd.DataFrame(
-                    {"Date": date, "Action": "Buy", "Price": close, "Quantity": 1}, index=[0])
-                books = pd.concat([books, new_row], axis=0, ignore_index=True)
-                self.cash -= close
-                
-
-        self.books = books
-        self.past_close = past_close
-
-        print("Trading completed")
-        print(f"Final holdings: {books}")
-
     def tally_books(self):
         books = self.books
         total_profit = 0
@@ -500,19 +374,7 @@ class AlgoTrader():
 
         return [total_profit, books]
     
-    
-    def plot_profit(self):
-        books = self.books
-        books.index = books['Date']
 
-        books['Profit'].plot(figsize=(20, 10))
-        plt.title('Profit over time', fontsize=20)
-        plt.xlabel('Date', fontsize=20)
-        plt.ylabel('Profit', fontsize=20)
-        plt.grid(axis='both')
-        plt.show()
-
-        
         
                 
                 
